@@ -1,0 +1,30 @@
+[
+  {
+    "id": "SEC-001",
+    "priority": 1,
+    "action": "audit_repository",
+    "approval": "internal_only",
+    "owner": "Auditor"
+  },
+  {
+    "id": "QA-001",
+    "priority": 2,
+    "action": "validate_mvp",
+    "approval": "internal_only",
+    "owner": "CTO"
+  },
+  {
+    "id": "FIN-001",
+    "priority": 3,
+    "action": "summarize_experiment",
+    "approval": "internal_only",
+    "owner": "Finance"
+  },
+  {
+    "id": "GROW-001",
+    "priority": 4,
+    "action": "send_customer_email",
+    "approval": "human_required",
+    "owner": "Growth"
+  }
+]

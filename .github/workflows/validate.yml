@@ -1,0 +1,25 @@
+name: Zero-cost validation
+on:
+  push:
+  pull_request:
+  workflow_dispatch:
+permissions:
+  contents: read
+jobs:
+  validate:
+    runs-on: ubuntu-latest
+    timeout-minutes: 5
+    steps:
+      - uses: actions/checkout@v4
+      - name: Verify project structure and CSV schema
+        run: |
+          python3 - <<'PY'
+          import csv, pathlib
+          required=['PROJECT_CHARTER.md','agents/ROLES.md','data/experiment_log.csv']
+          for p in required:
+              assert pathlib.Path(p).is_file(), p
+          with open('data/experiment_log.csv',newline='') as f:
+              header=next(csv.reader(f))
+          assert header == ['task_id','date','agent','action','status','evidence','human_minutes','new_spend_krw','approval_status']
+          print('Validation passed')
+          PY

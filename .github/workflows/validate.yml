@@ -23,3 +23,6 @@ jobs:
           assert header == ['task_id','date','agent','action','status','evidence','human_minutes','new_spend_krw','approval_status']
           print('Validation passed')
           PY
+
+      - name: Check offline MVP and JavaScript syntax
+        run: python3 tests/check_mvp.py

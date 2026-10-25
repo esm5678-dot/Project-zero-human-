@@ -1,0 +1,27 @@
+name: ZERO HUMAN decision engine
+on:
+  schedule:
+    - cron: '45 0 * * *'
+  workflow_dispatch:
+permissions:
+  contents: read
+jobs:
+  decide-and-execute:
+    runs-on: ubuntu-latest
+    timeout-minutes: 5
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: '22'
+      - name: Prioritize and run safe internal tasks
+        env:
+          ZERO_HUMAN_OUTPUT: artifacts/decision-run.json
+        run: python3 scripts/decision_engine.py
+      - name: Upload decision evidence
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: zero-human-decision-report
+          path: artifacts/decision-run.json
+          retention-days: 7

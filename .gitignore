@@ -1,0 +1,10 @@
+.env
+.env.*
+!.env.example
+*.pem
+*.key
+secrets/
+private/
+customer-data/
+__pycache__/
+.pytest_cache/

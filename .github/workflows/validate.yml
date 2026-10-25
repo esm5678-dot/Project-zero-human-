@@ -26,3 +26,11 @@ jobs:
 
       - name: Check offline MVP and JavaScript syntax
         run: python3 tests/check_mvp.py
+
+      - name: Install free browser test tooling
+        run: |
+          npm ci
+          npx playwright install chromium
+
+      - name: Test MVP in Chromium
+        run: npm run test:browser

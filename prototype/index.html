@@ -1,0 +1,30 @@
+<!doctype html>
+<html lang="ko"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1">
+<title>ZERO OPS — Offline Inquiry Tracker</title>
+<style>body{font:16px system-ui,sans-serif;max-width:1000px;margin:30px auto;padding:0 16px;color:#17212f;background:#f5f7fa}h1{margin-bottom:4px}.sub{color:#536070}.panel{background:white;border:1px solid #d9e0e9;border-radius:12px;padding:18px;margin:16px 0}input,textarea,select,button{font:inherit;padding:9px;border:1px solid #bac5d1;border-radius:7px}textarea{width:95%;min-height:80px}button{cursor:pointer;background:#163f72;color:white;border:0;margin:4px}button.secondary{background:#e8edf5;color:#152b47}table{width:100%;border-collapse:collapse}td,th{padding:10px;border-bottom:1px solid #dfe4ed;text-align:left;vertical-align:top}small{color:#536070}.scroll{overflow:auto}label{display:block;margin:8px 0}input[type=file]{max-width:95%}</style></head>
+<body><h1>ZERO OPS</h1><p class="sub">무료·오프라인 문의 관리 시제품 · 가상 데이터 전용 · 서버 전송 없음</p>
+<section class="panel"><h2>문의 등록</h2><label>고객 별칭 (실명 금지) <input id="alias" maxlength="40" placeholder="고객A"></label><label>문의 내용 <textarea id="message" placeholder="배송이 언제 오나요?"></textarea></label><button id="add">분류하고 등록</button><button class="secondary" id="demo">가상 예시 3건 넣기</button><p id="notice" role="status"></p></section>
+<section class="panel"><h2>현황</h2><p id="stats"></p><button id="export" class="secondary">CSV 내보내기</button><button id="clear" class="secondary">전체 삭제</button><div class="scroll"><table><thead><tr><th>별칭</th><th>분류</th><th>문의</th><th>답변 초안</th><th>상태</th><th>삭제</th></tr></thead><tbody id="rows"></tbody></table></div></section>
+<section class="panel"><h2>안내</h2><p>분류와 답변은 규칙 기반 초안이며 AI 모델 호출이 아닙니다. 고객에게 자동 발송되지 않습니다. 이 데모에는 실제 개인정보를 입력하지 마세요.</p><p>브라우저 탭을 닫으면 데이터가 사라집니다. CSV로 별도 저장할 수 있습니다. 외부 서비스와 연결되지 않습니다.</p></section>
+<script>
+'use strict';
+const categories=[
+ {name:'환불/취소',terms:['환불','취소','반품','refund'],reply:'문의해 주셔서 감사합니다. 주문 상태와 적용 가능한 환불·취소 정책을 확인한 뒤 안내드리겠습니다.'},
+ {name:'배송',terms:['배송','택배','언제 오','delivery'],reply:'배송 문의 감사합니다. 주문번호와 배송 상태를 확인한 뒤 안내드리겠습니다.'},
+ {name:'예약',terms:['예약','방문','일정','booking'],reply:'예약 문의 감사합니다. 희망 날짜와 시간을 확인한 뒤 가능 여부를 안내드리겠습니다.'},
+ {name:'결제',terms:['결제','영수증','입금','payment'],reply:'결제 문의 감사합니다. 거래 내역을 확인한 뒤 안내드리겠습니다.'},
+ {name:'상품',terms:['상품','제품','사이즈','재고','product'],reply:'상품 문의 감사합니다. 해당 상품의 상세 정보를 확인해 안내드리겠습니다.'}
+];
+let items=[];
+const $=id=>document.getElementById(id);
+function classify(msg){const lower=msg.toLowerCase();return categories.find(c=>c.terms.some(t=>lower.includes(t)))||{name:'기타',reply:'문의 감사합니다. 내용을 확인한 뒤 담당자가 답변드리겠습니다.'};}
+function add(alias,msg){const c=classify(msg);items.push({id:crypto.randomUUID?crypto.randomUUID():String(Date.now()+Math.random()),alias,msg,category:c.name,reply:c.reply,status:'접수'});render();}
+function cell(tr,text){const td=document.createElement('td');td.textContent=text;tr.appendChild(td);return td;}
+function render(){const tbody=$('rows');tbody.replaceChildren();for(const item of items){const tr=document.createElement('tr');cell(tr,item.alias);cell(tr,item.category);cell(tr,item.msg);cell(tr,item.reply);const td=document.createElement('td');const sel=document.createElement('select');for(const s of ['접수','처리 중','완료']){const opt=document.createElement('option');opt.textContent=s;opt.value=s;sel.appendChild(opt);}sel.value=item.status;sel.addEventListener('change',()=>{item.status=sel.value;render();});td.appendChild(sel);tr.appendChild(td);const del=document.createElement('td');const btn=document.createElement('button');btn.textContent='삭제';btn.className='secondary';btn.addEventListener('click',()=>{items=items.filter(x=>x.id!==item.id);render();});del.appendChild(btn);tr.appendChild(del);tbody.appendChild(tr);} $('stats').textContent='전체 '+items.length+'건 · 접수 '+items.filter(x=>x.status==='접수').length+'건 · 처리 중 '+items.filter(x=>x.status==='처리 중').length+'건 · 완료 '+items.filter(x=>x.status==='완료').length+'건';}
+$('add').addEventListener('click',()=>{const a=$('alias').value.trim(),m=$('message').value.trim();if(!a||!m){$('notice').textContent='별칭과 문의를 입력해 주세요.';return;}if(a.length>40||m.length>2000){$('notice').textContent='입력 길이를 줄여 주세요.';return;}add(a,m);$('alias').value='';$('message').value='';$('notice').textContent='등록했습니다. 답변은 발송되지 않았습니다.';});
+$('demo').addEventListener('click',()=>{add('가상고객A','배송은 언제 오나요?');add('가상고객B','예약 일정을 바꾸고 싶어요');add('가상고객C','환불 가능한가요?');});
+$('clear').addEventListener('click',()=>{if(confirm('모든 문의를 삭제할까요?')){items=[];render();}});
+function csvCell(s){return '"'+String(s).replace(/^[=+\-@\t\r]/,'\u0027$&').replace(/"/g,'""')+'"';}
+$('export').addEventListener('click',()=>{const fields=['alias','category','msg','reply','status'];const csv=[fields.join(','),...items.map(item=>fields.map(k=>csvCell(item[k])).join(','))].join('\r\n');const blob=new Blob(['\ufeff'+csv],{type:'text/csv;charset=utf-8'});const url=URL.createObjectURL(blob);const a=document.createElement('a');a.href=url;a.download='zero-ops-inquiries.csv';a.click();setTimeout(()=>URL.revokeObjectURL(url),1000);});
+render();
+</script></body></html>

@@ -1,0 +1,22 @@
+[
+  {
+    "id": "ZH-INT-001",
+    "type": "audit_repository",
+    "approval": "internal_only"
+  },
+  {
+    "id": "ZH-INT-002",
+    "type": "validate_mvp",
+    "approval": "internal_only"
+  },
+  {
+    "id": "ZH-INT-003",
+    "type": "summarize_experiment",
+    "approval": "internal_only"
+  },
+  {
+    "id": "ZH-EXT-001",
+    "type": "send_customer_email",
+    "approval": "human_required"
+  }
+]

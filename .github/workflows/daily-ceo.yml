@@ -1,0 +1,25 @@
+name: ZERO HUMAN daily CEO check (zero spend)
+on:
+  schedule:
+    - cron: '15 0 * * *'
+  workflow_dispatch:
+permissions:
+  contents: read
+jobs:
+  daily-check:
+    runs-on: ubuntu-latest
+    timeout-minutes: 5
+    steps:
+      - uses: actions/checkout@v4
+      - name: Run deterministic CEO report
+        env:
+          ZERO_HUMAN_OUTPUT: artifacts/daily-report.json
+        run: python3 scripts/daily_ceo.py
+      - name: Validate report
+        run: python3 -m json.tool artifacts/daily-report.json > /dev/null
+      - name: Upload daily report artifact
+        uses: actions/upload-artifact@v4
+        with:
+          name: zero-human-daily-report
+          path: artifacts/daily-report.json
+          retention-days: 7

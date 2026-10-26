@@ -1,0 +1,9 @@
+{
+  "enabled": false,
+  "provider": "unselected",
+  "max_new_spend_krw": 0,
+  "verified_zero_cash_billing": false,
+  "human_approved_provider": false,
+  "daily_request_limit": 0,
+  "allow_external_data": false
+}

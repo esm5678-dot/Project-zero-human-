@@ -14,7 +14,10 @@ MODEL_NAME = "qwen2.5-0.5b-instruct-q4_k_m.gguf"
 
 
 def aggregate():
-    with (ROOT / "data/experiment_log.csv").open(encoding="utf-8", newline="") as f:
+    log = ROOT / "data/experiment_log.csv"
+    if log.is_symlink():
+        raise ValueError("experiment log symlink is prohibited")
+    with log.open(encoding="utf-8", newline="") as f:
         rows = list(csv.DictReader(f))
     return {"entries": len(rows), "completed_research": sum(r["status"] == "completed_research_only" for r in rows)}
 
@@ -53,7 +56,7 @@ def execute_allowlisted(choice, counts):
     raise ValueError("model chose no allowlisted task")
 
 
-def run(model_path, output):
+def run(model_path):
     verified_model(model_path)
     counts = aggregate()
     if sys.prefix == sys.base_prefix:
@@ -85,6 +88,9 @@ def run(model_path, output):
               "input": counts, "model_choice": choice, "internal_result": detail,
               "executed_internal_tasks": 1, "external_actions": 0,
               "network_calls": 0, "new_spend_krw": 0}
+    output = ROOT / "artifacts/local-ai-report.json"
+    if output.parent.is_symlink() or output.is_symlink():
+        raise ValueError("report symlink is prohibited")
     output.parent.mkdir(parents=True, exist_ok=True)
     output.write_text(json.dumps(report, ensure_ascii=False, indent=2) + "\n", encoding="utf-8")
     print(json.dumps(report, ensure_ascii=False))
@@ -93,7 +99,6 @@ def run(model_path, output):
 if __name__ == "__main__":
     parser = argparse.ArgumentParser()
     parser.add_argument("--model", type=Path)
-    parser.add_argument("--output", type=Path, default=ROOT / "artifacts/local-ai-report.json")
     parser.add_argument("--inner", help=argparse.SUPPRESS)
     args = parser.parse_args()
     if args.inner is not None:
@@ -101,4 +106,4 @@ if __name__ == "__main__":
     elif args.model is None:
         parser.error("--model is required")
     else:
-        run(args.model.resolve(), args.output.resolve())
+        run(args.model.resolve())

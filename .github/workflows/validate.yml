@@ -42,3 +42,6 @@ jobs:
 
       - name: Check guided demo syntax and offline policy
         run: python3 tests/check_demo.py
+
+      - name: Test guided demo in Chromium
+        run: npm run test:demo

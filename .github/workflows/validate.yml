@@ -39,3 +39,6 @@ jobs:
         run: |
           python3 -m unittest discover -s tests -p 'test_*.py' -v
           python3 scripts/model_gate.py config/model_policy.json
+
+      - name: Check guided demo syntax and offline policy
+        run: python3 tests/check_demo.py

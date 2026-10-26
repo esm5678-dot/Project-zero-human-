@@ -1,7 +1,8 @@
 {
   "private": true,
   "scripts": {
-    "test:browser": "node --test tests/browser_mvp.cjs"
+    "test:browser": "node --test tests/browser_mvp.cjs",
+    "test:demo": "node --test tests/test_demo_browser.spec.js"
   },
   "devDependencies": {
     "playwright": "1.62.1"

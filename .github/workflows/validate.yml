@@ -34,3 +34,8 @@ jobs:
 
       - name: Test MVP in Chromium
         run: npm run test:browser
+
+      - name: Test zero-spend model safety gate
+        run: |
+          python3 -m unittest discover -s tests -p 'test_model_gate.py' -v
+          python3 scripts/model_gate.py config/model_policy.json

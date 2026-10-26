@@ -20,3 +20,7 @@
 이 저장소의 코드는 MIT 라이선스입니다. 수익을 보장하지 않으며, 고객 정보·비밀키를 공개하지 마세요.
 
 See [English overview](README.md) and [publication policy](PUBLICATION_POLICY.md).
+
+## 로컬 AI 실험
+
+공개 Apache 2.0 소형 모델을 CPU에서 실행하는 [내부 작업 실행기](scripts/local_ai_agent.py)가 있습니다. 입력은 실험 로그의 집계 건수뿐이고, 모델은 두 가지 허용된 내부 작업 중 하나를 선택합니다. 모델 파일은 저장소에 없으며, 네트워크와 쓰기를 차단하는 Linux `bwrap`가 필요합니다. 검증 근거와 재현 방법은 [로컬 모델 검증 기록](research/2026-10-26-local-model-verification.md)에 있습니다. 유료·구독 API 호출은 계속 비활성화되어 있습니다.

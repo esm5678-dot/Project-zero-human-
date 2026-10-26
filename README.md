@@ -18,6 +18,7 @@ An open experiment launched 2026-10-26. No employees, no new paid tools, no adve
 - [Agent roles](agents/ROLES.md)
 - [Publication and privacy policy](PUBLICATION_POLICY.md)
 - [Experiment log schema](data/experiment_log.csv)
+- [Local offline AI verification and runner](research/2026-10-26-local-model-verification.md)
 
 Fork this repository to run your own experiment. Do not commit secrets or real customer data. A fork does not guarantee earnings.
 
